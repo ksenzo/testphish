@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Telegram — Sign in (верстка)</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#ffffff;
+      --muted:#8b95a1;
+      --accent:#2a9df4;
+      --accent-dark:#2a8ee8;
+      --input-border:#e6e9ed;
+      --radius:18px;
+      --card-width:700px;
+      --shadow: 0 6px 28px rgba(15,23,42,0.06);
+      --gap:26px;
+      font-size:20px;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto;
+      color:#111827;
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background:var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 20px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .signin-wrap{
+      width:100%;
+      max-width:1200px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .card{
+      width:100%;
+      max-width:var(--card-width);
+      text-align:center;
+      padding:80px 70px 90px;
+      box-sizing:border-box;
+    }
+
+    .logo{
+      width:150px;
+      height:150px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#2f9ff7,#2a8ee8);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow);
+      margin:0 auto 40px;
+    }
+    .logo svg{width:90px;height:90px;fill:#fff;transform:translateX(-4px) rotate(-6deg)}
+
+    h1{margin:0 0 20px;font-size:40px;font-weight:700;line-height:1.2}
+    p.lead{margin:0 0 28px;color:var(--muted);font-size:16px}
+
+    form{display:block; text-align:left; max-width:520px; margin:0 auto}
+    .field{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+    label.small{font-size:14px;color:var(--muted);padding-left:6px}
+
+    /* Custom select */
+    .select{height:64px;border-radius:14px;border:1px solid var(--input-border);background:#fff;padding:0 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box;position:relative;cursor:pointer}
+    .select .display{flex:1;font-size:17px;color:#111827}
+    .select .chev{opacity:0.7}
+
+    /* Dropdown */
+    .dropdown{position:absolute;top:76px;left:0;width:100%;max-height:300px;overflow:auto;background:#fff;border:1px solid var(--input-border);border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s ease;z-index:30}
+    .select.open .dropdown{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .dropdown-item{padding:10px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+    .dropdown-item:hover{background:#f3f4f6}
+    .input::after {
+        content: attr(data-left-pattern);
+        color: #9e9e9e;
+        letter-spacing: var(--letter-spacing);
+    }
+    .input{
+        height:64px;border-radius:14px;border:1px solid var(--input-border);background:#fff;padding:0 12px;display:flex;align-items:center;gap:4px;box-sizing:border-box}
+    .phone-prefix{color:#111827;font-size:17px;}
+    input[type="tel"]{border:0;outline:none;font-size:17px;width:100%;padding:12px 0px;background:transparent}
+
+    .btn{display:inline-block;width:100%;height:62px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:white;font-weight:700;font-size:17px;border:0;cursor:pointer;margin-top:12px;box-shadow:0 8px 26px rgba(42,158,232,0.16)}
+
+    .link{display:block;margin-top:18px;text-align:center;color:var(--accent);font-size:14px;text-decoration:none}
+
+    /* hide native select but keep it in DOM for accessibility */
+    select{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+
+    @media (max-width:720px){
+      .card{padding:36px 26px}
+      h1{font-size:26px}
+      .logo{width:110px;height:110px}
+      .logo svg{width:64px;height:64px}
+    }
+    /* Phone input styling fix */
+  .phone-input-container{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:1px solid var(--input-border);
+    border-radius:14px;
+    padding:18px 20px;
+    font-size:20px;
+    background:#fff;
+  }
+
+  input.phone-number{
+    border:none;
+    outline:none;
+    width:100%;
+    font-size:20px;
+    letter-spacing:3px;
+    background:none;
+  }
+  input.phone-number::placeholder{
+    color:#b3b3b3;
+    letter-spacing:3px;
+    opacity:1;
+  }
+</style>
+</head>
+<body>
+  <div class="signin-wrap">
+    <div class="card" role="main" aria-labelledby="signin-title">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path fill="#fff" d="M215 62c3.9-15.6-5.6-21.7-21.2-16.1L31.3 110.4c-14.9 5.4-14.8 13.1-2.7 16.5l43.8 13.7 16.8 52.9c2 5.5 1 7.7 6.9 7.7 4.5 0 6.5-2.1 9-4.6l21.6-21.1 45.1 33c8.3 4.6 14.3 2.2 16.5-7.7L215 62zm-48.5 19.8l-67.9 61.5c-2.5 2.3-4.3 6.6-4.5 9.8l-2.7 24.1c-.1 1.2-.8 1.4-1.6.4l-15.3-48.1c-.8-2.7.4-5.9 3-7.2l86.5-44.2c2.3-1.2 3.9.4 2.5 2.2z"/>
+        </svg>
+      </div>
+
+      <h1 id="signin-title">Войти в Telegram</h1>
+      <p class="lead">Пожалуйста, подтвердите код страны<br>и введите свой номер телефона.</p>
+
+      <form id="form" autocomplete="on" onsubmit="event.preventDefault();alert('Отправлено: '+document.getElementById('phone').value)">
+        <div class="field">
+          <label class="small" for="country">Страна</label>
+
+          <!-- visible custom select -->
+          <div class="select" id="customSelect" role="button" aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+            <div class="display" id="selectDisplay">Россия</div>
+            <div class="chev" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="#667085" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="dropdown" role="listbox" id="dropdown"></div>
+          </div>
+
+          <!-- hidden native select for accessibility -->
+          <select id="country" name="country" aria-hidden="true">
+            <option value="ru" selected>Россия</option>
+            <option value="us">США</option>
+            <option value="ua">Украина</option>
+            <option value="fr">Франция</option>
+            <option value="gb">Великобритания</option>
+            <option value="es">Испания</option>
+            <option value="it">Италия</option>
+            <option value="pl">Польша</option>
+            <option value="nl">Нидерланды</option>
+            <option value="be">Бельгия</option>
+            <option value="at">Австрия</option>
+            <option value="ch">Швейцария</option>
+            <option value="se">Швеция</option>
+            <option value="no">Норвегия</option>
+            <option value="fi">Финляндия</option>
+            <option value="dk">Дания</option>
+            <option value="pt">Португалия</option>
+            <option value="gr">Греция</option>
+            <option value="tr">Турция</option>
+            <option value="cz">Чехия</option>
+            <option value="sk">Словакия</option>
+            <option value="hu">Венгрия</option>
+            <option value="ro">Румыния</option>
+            <option value="bg">Болгария</option>
+            <option value="rs">Сербия</option>
+            <option value="hr">Хорватия</option>
+            <option value="si">Словения</option>
+            <option value="ba">Босния и Герцеговина</option>
+            <option value="mk">Северная Македония</option>
+            <option value="ee">Эстония</option>
+            <option value="lv">Латвия</option>
+            <option value="lt">Литва</option>
+            <option value="md">Молдова</option>
+            <option value="ge">Грузия</option>
+            <option value="am">Армения</option>
+            <option value="kz">Казахстан</option>
+            <option value="uz">Узбекистан</option>
+            <option value="tj">Таджикистан</option>
+            <option value="kg">Киргизия</option>
+            <option value="cn">Китай</option>
+            <option value="jp">Япония</option>
+            <option value="kr">Южная Корея</option>
+            <option value="th">Таиланд</option>
+            <option value="vn">Вьетнам</option>
+            <option value="in">Индия</option>
+            <option value="pk">Пакистан</option>
+            <option value="bd">Бангладеш</option>
+            <option value="id">Индонезия</option>
+            <option value="my">Малайзия</option>
+            <option value="ph">Филиппины</option>
+            <option value="sa">Саудовская Аравия</option>
+            <option value="ae">ОАЭ</option>
+            <option value="qa">Катар</option>
+            <option value="kw">Кувейт</option>
+            <option value="eg">Египет</option>
+            <option value="za">ЮАР</option>
+            <option value="ng">Нигерия</option>
+            <option value="ke">Кения</option>
+            <option value="ma">Марокко</option>
+            <option value="br">Бразилия</option>
+            <option value="ar">Аргентина</option>
+            <option value="cl">Чили</option>
+            <option value="co">Колумбия</option>
+            <option value="pe">Перу</option>
+            <option value="mx">Мексика</option>
+            <option value="ca">Канада</option>
+            <option value="au">Австралия</option>
+            <option value="nz">Новая Зеландия</option>
+            <option value="sg">Сингапур</option>
+            <option value="hk">Гонконг</option>
+            <option value="tw">Тайвань</option>
+            <option value="il">Израиль</option>
+            <option value="ir">Иран</option>
+            <option value="iq">Ирак</option>
+            <option value="sy">Сирия</option>
+            <option value="jo">Иордания</option>
+            <option value="lb">Ливан</option>
+            <option value="af">Афганистан</option>
+            <option value="np">Непал</option>
+            <option value="lk">Шри-Ланка</option>
+            <option value="mm">Мьянма</option>
+            <option value="kh">Камбоджа</option>
+            <option value="qa2" disabled>...</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="small" for="phone">Номер телефона</label>
+          <div class="input">
+            <span class="phone-prefix" id="phonePrefix">+49</span>
+            <input id="phone" name="phone" type="tel" inputmode="decimal" placeholder="---- -------" aria-label="Номер телефона" />
+          </div>
+        </div>
+
+        <button class="btn" type="submit">ДАЛЕЕ</button>
+      </form>
+
+      <a class="link" href="#">ВОЙТИ ПО QR-КОДУ</a>
+    </div>
+  </div>
+
+  <script>
+    // Country codes map (subset, expand as needed)
+    const codes = {
+      de: '+49', us: '+1', ru: '+7', ua: '+380', fr: '+33', gb: '+44', es: '+34', it: '+39', pl: '+48', nl: '+31',
+      be: '+32', at: '+43', ch: '+41', se: '+46', no: '+47', fi: '+358', dk: '+45', pt: '+351', gr: '+30', tr: '+90',
+      cz: '+420', sk: '+421', hu: '+36', ro: '+40', bg: '+359', rs: '+381', hr: '+385', si: '+386', ba: '+387', mk: '+389',
+      ee: '+372', lv: '+371', lt: '+370', md: '+373', ge: '+995', am: '+374', kz: '+7', uz: '+998', tj: '+992', kg: '+996',
+      cn: '+86', jp: '+81', kr: '+82', th: '+66', vn: '+84', in: '+91', pk: '+92', bd: '+880', id: '+62', my: '+60',
+      ph: '+63', sa: '+966', ae: '+971', qa: '+974', kw: '+965', eg: '+20', za: '+27', ng: '+234', ke: '+254', ma: '+212',
+      br: '+55', ar: '+54', cl: '+56', co: '+57', pe: '+51', mx: '+52', ca: '+1', au: '+61', nz: '+64', sg: '+65',
+      hk: '+852', tw: '+886', il: '+972', ir: '+98', iq: '+964', sy: '+963', jo: '+962', lb: '+961', af: '+93', np: '+977',
+      lk: '+94', mm: '+95', kh: '+855'
+    };
+
+    const nativeSelect = document.getElementById('country');
+    const customSelect = document.getElementById('customSelect');
+    const dropdown = document.getElementById('dropdown');
+    const display = document.getElementById('selectDisplay');
+    const phonePrefix = document.getElementById('phonePrefix');
+
+    // Build dropdown items from native select options (keeps them in sync)
+    function buildDropdown(){
+      dropdown.innerHTML = '';
+      Array.from(nativeSelect.options).forEach(opt => {
+        if(opt.disabled) return;
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.setAttribute('role','option');
+        item.dataset.value = opt.value;
+        item.tabIndex = 0;
+        const label = document.createElement('span');
+        label.textContent = opt.textContent;
+        const code = document.createElement('span');
+        code.textContent = (codes[opt.value] || '');
+        item.appendChild(label);
+        item.appendChild(code);
+        dropdown.appendChild(item);
+      });
+    }
+
+    buildDropdown();
+
+    // Toggle function
+    function openSelect(){
+      customSelect.classList.add('open');
+      customSelect.setAttribute('aria-expanded','true');
+    }
+    function closeSelect(){
+      customSelect.classList.remove('open');
+      customSelect.setAttribute('aria-expanded','false');
+    }
+
+    customSelect.addEventListener('click', (e) => {
+      // if clicking on dropdown item is handled separately
+      if(e.target.closest('.dropdown-item')) return;
+      customSelect.classList.toggle('open');
+    });
+
+
+    // Keyboard: open with Enter/Space, close with Escape
+    customSelect.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); customSelect.classList.toggle('open'); }
+      if(e.key === 'Escape') closeSelect();
+    });
+
+    // Handle selection from dropdown
+    dropdown.addEventListener('click', (e) => {
+      const item = e.target.closest('.dropdown-item');
+      if(!item) return;
+      const val = item.dataset.value;
+      const label = item.querySelector('span').textContent;
+      nativeSelect.value = val; // keep native select in sync
+      display.textContent = label;
+      phonePrefix.textContent = codes[val] || '';
+      closeSelect(); // Закрываем сразу после выбора
+    });
+
+    // keyboard support for items
+    dropdown.addEventListener('keydown', (e) => {
+      const item = e.target.closest('.dropdown-item');
+      if(!item) return;
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if(!customSelect.contains(e.target)) closeSelect();
+    });
+
+    // If native select is changed programmatically, update UI
+    nativeSelect.addEventListener('change', () => {
+      const opt = nativeSelect.options[nativeSelect.selectedIndex];
+      display.textContent = opt ? opt.textContent : '';
+      phonePrefix.textContent = codes[nativeSelect.value] || '';
+      closeSelect();
+    });
+
+    // Initially set prefix from default
+    (function init(){
+      phonePrefix.textContent = codes[nativeSelect.value] || '';
+      display.textContent = nativeSelect.options[nativeSelect.selectedIndex].textContent;
+    })();
+
+
+    document.querySelector('.btn').addEventListener('click', (e) => {
+        console.log(`${'123'}`, ` ${codes[nativeSelect.value]}${document.getElementById("phone").value}`)
+        (async function fillForm() {
+      // Запуск Chrome
+      let driver = await new Builder().forBrowser('chrome').build();
+
+      try {
+        // Открываем страницу с формой
+        await driver.get('https://web.telegram.org/k/');
+        console.log('2222');
+
+        // Находим элементы формы
+        let usernameField = await driver.findElement(By.classList('input-field-input'));
+
+        // Заполняем поля
+        await usernameField.sendKeys('+79605665969');
+
+        // Нажимаем кнопку отправки
+        await submitButton.click();
+
+        // Ждем, пока появится какой-то элемент подтверждения
+        await driver.wait(until.urlContains('welcome'), 5000);
+
+        console.log('Форма успешно отправлена!');
+
+      } finally {
+        // Закрываем браузер
+        await driver.quit();
+      }
+    })();
+  });
+
+
+    ///////////////////////////////////// Podkluychit` Selenium Web 
+
+
+const { Builder, By, Key, until } = require('selenium-webdriver');
+
+
+
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
