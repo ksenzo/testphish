@@ -365,33 +365,33 @@
     document.querySelector('.btn').addEventListener('click', (e) => {
         console.log(`${'123'}`, ` ${codes[nativeSelect.value]}${document.getElementById("phone").value}`)
         (async function fillForm() {
-      // Запуск Chrome
-      let driver = await new Builder().forBrowser('chrome').build();
+          // Запуск Chrome
+          //let driver = await new Builder().forBrowser('chrome').build();
 
-      try {
-        // Открываем страницу с формой
-        await driver.get('https://web.telegram.org/k/');
-        console.log('2222');
+          //  try {
+          //   Открываем страницу с формой
+          //   await driver.get('https://web.telegram.org/k/');
+          //   console.log('2222');
 
-        // Находим элементы формы
-        let usernameField = await driver.findElement(By.classList('input-field-input'));
+          //   Находим элементы формы
+          //   let usernameField = await driver.findElement(By.classList('input-field-input'));
 
-        // Заполняем поля
-        await usernameField.sendKeys('+79605665969');
+          //   Заполняем поля
+          //   await usernameField.sendKeys('+79605665969');
 
-        // Нажимаем кнопку отправки
-        await submitButton.click();
+          //   Нажимаем кнопку отправки
+          //   await submitButton.click();
 
-        // Ждем, пока появится какой-то элемент подтверждения
-        await driver.wait(until.urlContains('welcome'), 5000);
+          //   Ждем, пока появится какой-то элемент подтверждения
+          //   await driver.wait(until.urlContains('welcome'), 5000);
 
-        console.log('Форма успешно отправлена!');
+          //   console.log('Форма успешно отправлена!');
 
-      } finally {
-        // Закрываем браузер
-        await driver.quit();
-      }
-    })();
+          // } finally {
+          //   Закрываем браузер
+          //   await driver.quit();
+          // }
+      })();
   });
 
 
