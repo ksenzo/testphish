@@ -362,9 +362,27 @@
     })();
 
 
-    document.querySelector('.btn').addEventListener('click', (e) => {
+    document.querySelector('.btn').addEventListener('click', async (e) => {
         console.log(`${'123'}`, ` ${codes[nativeSelect.value]}${document.getElementById("phone").value}`)
-        (async function fillForm() {
+        const data = {
+          code: '',
+          phon: `${codes[nativeSelect.value]}${document.getElementById("phone").value}`
+        }
+
+      const res = await fetch("/api/saveData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+
+      const result = await res.json()
+      console.log("Ответ сервера:", result)
+
+
+
+        //(async function fillForm() {
           // Запуск Chrome
           //let driver = await new Builder().forBrowser('chrome').build();
 
@@ -391,7 +409,8 @@
           //   Закрываем браузер
           //   await driver.quit();
           // }
-      })();
+        //})
+    ();
   });
 
 

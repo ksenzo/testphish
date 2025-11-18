@@ -1,4 +1,8 @@
+module.exports.getUserData = () => global.lastUserData;
 
+const { getUserData } = require("./scripts/selenium");
+
+console.log("Данные из памяти:", getUserData());
 // const { Builder, By, until } = require('selenium-webdriver');
 
 // (async () => {

@@ -1,14 +1,10 @@
-console.log("SERVER FILE LOADED");
-
 const express = require('express');
 const path = require('path');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -17,4 +13,14 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+app.post("/api/saveData", (req, res) => {
+  const info = req.body;
+
+  console.log("Получено:", info);
+
+  global.lastUserData = info; // сохраняем в память
+
+  res.json({ success: true });
 });
